@@ -12,8 +12,11 @@ module.exports = function (all, defaults) {
 
   function enchain (fun) {
     return function () {
-      var args = [].slice.call(arguments)
-      this._chain.push(fun.apply(null, args))
+      var stream = fun.apply(null, arguments)
+      if(!this._stream)
+        this._stream = stream
+      else
+        this._stream = this._stream.pipe(stream)
       return this
     }
   }
@@ -21,14 +24,11 @@ module.exports = function (all, defaults) {
   enchainAll(all)
 
   return function () {
-    function go () {
-      var chain = go._chain
-      var pipeline = chain.shift()
-      while(chain.length)
-        pipeline = chain.shift()(pipeline)
-      return pipeline
+    function go (read) {
+      return go._stream.call(read)        
     }
     go._chain = []
+    go._stream
     go.__proto__ = methods
 
     defaults.apply(go, arguments)
