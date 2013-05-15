@@ -14,19 +14,23 @@ var simple = {
   log: log,
   stdout: log,
   json: function (name, vName) {
-    var first = true
+    var first = true, next = ''
+
     return pull.drain(function (e) {
       if(!first)
-        console.log(',')
-      else {
-        console.log(name ? '{' : '[')
-      }
+        console.log(next + ',')
+
+      var value = JSON.stringify(vName ? e[vName] : e, null, 2)
+      next = name ? JSON.stringify(e[name]) +': ' + value : value
+
+      if(first)
+        next = (name ? '{' : '[') + next
 
       first = false
-      var value = JSON.stringify(vName ? e[vName] : e, null, 2)
-      console.log(name ? JSON.stringify(e[name]) +': ' + value : value)
     }, function (err) {
-      console.log(']')
+      if(first)
+        next = (name ? '{' : '[') + next
+      console.log(next + (name ? '}' : ']'))
     })
   },
   stat: function () {
