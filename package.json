@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "pull-glob": "~1.0.0",
-    "pull-stream": "~2.18.0",
+    "pull-stream": ">=2.20 <3",
     "pull-fs": "~1.1.2"
   },
   "devDependencies": {},
