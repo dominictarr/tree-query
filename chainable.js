@@ -1,3 +1,4 @@
+var pull = require('pull-stream')
 
 module.exports = function (all, defaults) {
   var methods = function () {}
@@ -16,7 +17,7 @@ module.exports = function (all, defaults) {
       if(!this._stream)
         this._stream = stream
       else
-        this._stream = this._stream.pipe(stream)
+        this._stream = pull(this._stream, stream)
       return this
     }
   }
